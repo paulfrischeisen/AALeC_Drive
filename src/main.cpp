@@ -15,6 +15,7 @@ void setup() {
   aalec.print_line(1, "Nunchuck Test");
 
   Wire.begin();
+  Wire.setClock(100000);
   nunchuck.begin();
 }
 
@@ -30,6 +31,10 @@ void loop() {
   }
 
   Serial.println();
-
+  Serial.print("X-Input: ");
+  Serial.print(nunchuck.getJoyX());
+  Serial.print("\t Y-Input: ");
+  Serial.print(nunchuck.getJoyY());
+  Serial.println();
   delay(1000);
 }
