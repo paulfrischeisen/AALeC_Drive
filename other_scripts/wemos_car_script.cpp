@@ -29,6 +29,9 @@ void forward() {
   digitalWrite(IN4, LOW);
 }
 
+// Rückwärts linkes Rad probleme. Input PINs prüfen am wemos!! Verhält sich komisch
+// Muss an IN2 bzw. IN4 eigentlich liegen (forwärts geht alles)
+// Insgesamt ist die Verbindung manchmal am hängen (vielleicht auch Kabel die teilweise lose werden oder WLAN Hotspot)
 void backward() {
   Serial.println("MOTOR: backward");
   digitalWrite(IN1, LOW);
