@@ -21,6 +21,9 @@ const char* carTopic = "aalec/car/cmd";
 // damit nicht dauernd derselbe Befehl gespammt wird
 String lastCommand = "";
 
+// den c knopf gedrückt? für Sound
+bool lastCPressed = false;
+
 // Joystick-Grenzwerte
 const int CENTER_MIN = 90;
 const int CENTER_MAX = 170;
@@ -98,6 +101,16 @@ void loop() {
   client.loop();
 
   nunchuck.readData();
+
+  bool cPressed = nunchuck.getButtonC();
+
+  if (cPressed && !lastCPressed) {
+    client.publish(carTopic, "sound_next");
+    Serial.println("Gesendet: sound_next");
+    aalec.print_line(3, "Sound!");
+  }
+
+  lastCPressed = cPressed;
 
   int x = nunchuck.getJoyX();
   int y = nunchuck.getJoyY();
