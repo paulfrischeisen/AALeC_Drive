@@ -1,0 +1,4 @@
+Für Mosquitto setup auf dem Laptop muss man einfach nur in powershell:
+.\mosquitto.exe -c "C:\Users\paulf\Desktop\-\3. MIN\TIBS\mosquitto_wlan.conf" -v
+-> Also halt den Ort an dem die Config Datei abliegt ausführen. Damit läuft der broker auf dem Laptop und 
+MQTT Signale können von AALeC an das Auto gesendet werden. 
