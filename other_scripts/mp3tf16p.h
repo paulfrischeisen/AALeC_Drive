@@ -4,6 +4,7 @@
 // This is a header file from a youtube tutorial for setting up the MP3-TF16 Player (clone of the DFPlayerMINI module)
 // It is used in the script that we wrote for the nano. This nano script takes one input pin if the sound is triggered and
 // then plays the sound over the speaker.
+// The Libraries neccessary for this header where included in the arduino IDE - not here in VS Code. 
 
 #define MP3_ERROR_ONLY 1
 #define MP3_ALL_MESSAGE 2
