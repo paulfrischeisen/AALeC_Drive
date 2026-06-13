@@ -6,9 +6,11 @@ const char* password = "moneyboy";
 const char* mqtt_server = "172.20.10.3";
 
 #define IN1 D5
-#define IN2 D6
+#define IN2 D8
 #define IN3 D7
-#define IN4 D0
+#define IN4 D6
+
+#define SOUND_TRIGGER_PIN D2
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -40,21 +42,49 @@ void backward() {
   digitalWrite(IN4, HIGH);
 }
 
+void backward_left() {
+  Serial.println("MOTOR: backward_left");
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, HIGH);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+void backward_right() {
+  Serial.println("MOTOR: backward_right");
+  digitalWrite(IN1, LOW);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, HIGH);
+}
+
 void left() {
   Serial.println("MOTOR: left");
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  digitalWrite(IN3, LOW);
+  digitalWrite(IN4, LOW);
+}
+
+void right() {
+  Serial.println("MOTOR: right");
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, LOW);
   digitalWrite(IN3, HIGH);
   digitalWrite(IN4, LOW);
 }
 
-void right() {
-  Serial.println("MOTOR: right");
-  digitalWrite(IN1, HIGH);
-  digitalWrite(IN2, LOW);
-  digitalWrite(IN3, LOW);
-  digitalWrite(IN4, LOW);
+void triggerNanoSound() {
+  Serial.println("SOUND: trigger Nano");
+
+  digitalWrite(SOUND_TRIGGER_PIN, HIGH);
+  delay(200);
+  digitalWrite(SOUND_TRIGGER_PIN, LOW);
+
+  Serial.println("SOUND: trigger sent");
 }
+
+
 
 // mqtt callback, wird automatisch aufgerufen, sobald eine mqtt nachricht ankommt (zb forward, right, ..)
 // mit .\mosquitto_pub.exe -h 172.20.10.3 -t aalec/car/cmd -m "forward" kann man dann zb forward an den wemos am auto senden
@@ -78,7 +108,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   else if (msg == "backward") backward();
   else if (msg == "left") left();
   else if (msg == "right") right();
+  else if (msg == "backward_left") backward_left();
+  else if (msg == "backward_right") backward_right();
   else if (msg == "stop") stopMotors();
+  else if (msg == "sound_next") triggerNanoSound();
   else {
     Serial.print("Unbekannter Befehl: ");
     Serial.println(msg);
@@ -92,7 +125,7 @@ void reconnect() {
     Serial.print(mqtt_server);
     Serial.print(" ... ");
 
-    if (client.connect("AutoWemos")) {
+    if (client.connect("AutoWemosMini")) {
       Serial.println("OK");
       // Wenn connection geklappt hat, hört der wemos auf das topic aalec/car/cmd
       client.subscribe("aalec/car/cmd");
@@ -110,12 +143,15 @@ void reconnect() {
 // wlan verbindung aufbauen (hotspot von Paul) -> ip-adresse ausgeben -> mqtt broker und callback registrieren.
 void setup() {
   Serial.begin(115200);
-  delay(1500);
+  delay(500);
 
   Serial.println();
   Serial.println("==============================");
-  Serial.println("AUTO-WEMOS DEBUG START");
+  Serial.println("AUTO-WEMOS MOTOR + NANO SOUND TRIGGER");
   Serial.println("==============================");
+
+  pinMode(SOUND_TRIGGER_PIN, OUTPUT);
+  digitalWrite(SOUND_TRIGGER_PIN, LOW);
 
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
@@ -145,7 +181,7 @@ void setup() {
 
   Serial.println();
   Serial.println("WLAN: verbunden");
-  Serial.print("Wemos-IP: ");
+  Serial.print("D1 mini IP: ");
   Serial.println(WiFi.localIP());
 
   client.setServer(mqtt_server, 1883);
@@ -158,4 +194,5 @@ void loop() {
   }
 
   client.loop();
+  // delay(50);
 }
