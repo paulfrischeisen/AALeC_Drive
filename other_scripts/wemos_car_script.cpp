@@ -3,7 +3,7 @@
 
 const char* ssid = "iPhone";
 const char* password = "moneyboy";
-const char* mqtt_server = "172.20.10.3";
+const char* mqtt_server = "172.20.10.13";
 
 #define IN1 D5
 #define IN2 D8
